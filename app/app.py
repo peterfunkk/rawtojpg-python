@@ -6,6 +6,7 @@ import zipfile
 import os
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 
 @app.route('/')
 def index():
