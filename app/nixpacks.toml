@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["nginx"]
+
+[phases.start]
+command = """
+cp nginx.conf /etc/nginx/nginx.conf
+gunicorn app:app --bind 0.0.0.0:$PORT
+"""
