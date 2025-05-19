@@ -1,9 +1,9 @@
 [phases.setup]
-nixPkgs = ['nginx']
+nixPkgs = ["nginx"]
 
 [phases.start]
-cmds = [
-  "mkdir -p /etc/nginx",
-  "echo 'client_max_body_size 100M;' > /etc/nginx/nginx.conf",
-  "gunicorn app:app --bind 0.0.0.0:$PORT"
-]
+command = """
+mkdir -p /etc/nginx
+echo 'client_max_body_size 100M;' > /etc/nginx/nginx.conf
+gunicorn app:app --bind 0.0.0.0:$PORT
+"""
