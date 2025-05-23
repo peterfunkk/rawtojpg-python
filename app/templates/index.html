@@ -5,35 +5,50 @@
 </head>
 <body>
   <h1>Subí tus archivos RAW</h1>
-  <form id="uploadForm" enctype="multipart/form-data">
-    <input type="file" name="files" multiple>
-    <button type="submit">Convertir</button>
-  </form>
+  <form id="uploadForm">
+  <input type="file" id="rawFiles" name="files" multiple>
+  <button type="submit">Subir y Convertir</button>
+</form>
 
   <script>
     document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
+  e.preventDefault();
+  const fileInput = document.getElementById('rawFiles');
+  const files = fileInput.files;
 
-      const response = await fetch('/convert', {
-        method: 'POST',
-        body: formData
-      });
+  if (files.length === 0) {
+    alert("Por favor, selecciona al menos un archivo RAW.");
+    return;
+  }
 
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
+  const formData = new FormData();
+  for (let file of files) {
+    formData.append("files", file);
+  }
 
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'converted_images.zip';
-        a.click();
-      } else {
-        const error = await response.json();
-        alert('Error: ' + error.error);
-      }
+  try {
+    const response = await fetch('/convert', {
+      method: 'POST',
+      body: formData
     });
-  </script>
+
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'converted_images.zip';
+      a.click();
+    } else {
+      const error = await response.json();
+      alert('Error del backend: ' + error.error);
+    }
+  } catch (err) {
+    alert("Error al comunicar con el backend: " + err.message);
+  }
+});
+
+</script>
+
 </body>
 </html>
